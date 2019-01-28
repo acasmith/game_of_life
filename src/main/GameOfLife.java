@@ -10,11 +10,11 @@ import java.util.List;
  *
  */
 
-class GameBoard 
+class GameOfLife
 {
 	public List<Cell> aliveCells = new ArrayList<>();
 	
-	public GameBoard()
+	public GameOfLife()
 	{
 		
 	}
