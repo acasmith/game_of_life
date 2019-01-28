@@ -10,7 +10,13 @@ class CellTest {
 	void testInitialNullArray()
 	{
 		Cell aCell = new Cell();
-		assertFalse(aCell.neighbours[0] != null);
+		boolean isNull = true;
+		for(int i = 0; i < aCell.neighbours.length; i++)
+		{
+			isNull = !(aCell.neighbours[i] != null);
+		}
+		assertTrue(isNull, "A Cells initial neighbours array should all be null.");
 	}
+	
 
 }
