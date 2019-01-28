@@ -1,6 +1,6 @@
 package main;
 
-public class Cell 
+class Cell 
 {
 	private boolean isAlive = false;
 	private int aliveNeighbourCount = 0;
