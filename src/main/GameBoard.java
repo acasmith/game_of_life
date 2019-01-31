@@ -9,15 +9,10 @@ import java.util.List;
  * A class to represent the infinite board on which the game is played. 
  */
 
-/*
- * TODO: 
- * 
- * 		
- * 		
- */
 public class GameBoard
 {
 	List<Cell> aliveCells;
+	
 	/**
 	 * Constructor
 	 */

@@ -6,10 +6,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class CellTest {
-	
-	int[] indexArray = new int[0];
+
 	Cell aCell;
 	
+	/*
+	 * Basic pre-test setup:
+	 * Create a cell and give it an interconnected set of dead cell neighbours.
+	 */
 	@BeforeEach public void initialize()
 	{
 		this.aCell = new Cell();
@@ -27,7 +30,7 @@ class CellTest {
 	@Test
 	void testInitialNullArray()
 	{
-		this.aCell = new Cell(); //Want to avoid setting neighbours via initialize.
+		this.aCell = new Cell();
 		boolean isNull = true;
 		for(int i = 0; i < aCell.neighbours.length; i++)
 		{
@@ -224,5 +227,171 @@ class CellTest {
 		assertFalse(neighbour8.neighbours[2] != null, "neighbour0.neighbours[2] should be null");
 	}
 	
+	/**
+	 * Algorithmic way of checking cell interconnections are correct, based on the logic used 
+	 * in cell.interconnectNeighbours().
+	 * Included here to make testing interconnections easier after interconnectNeighbours logic has been tested above.
+	 * @param aCell the central cell around which the connections to be tested are based.
+	 */
+	private boolean neighbourInterconnectionTest(Cell aCell)
+	{
+		//Tracks whether any connections are not as expected.
+		boolean connectionsCorrect = true;
+		
+		//For each cell in this.neighbours
+		for(int currentElementIndex = 0; currentElementIndex < aCell.neighbours.length; currentElementIndex++)
+		{
+			//Calculate indexes of neighbours that are connected to current Element
+			int lowBoundary = Math.max(currentElementIndex - 4, 0);
+			int highBoundary = Math.min(currentElementIndex + 4, aCell.neighbours.length - 1);
+			
+			//Calculate new index relative to current element, based on OG index.
+			for(int i = lowBoundary; i <= highBoundary; i++)
+			{
+				//Catch range values that are not adjacent to cell.
+				if(Math.max(currentElementIndex % 3, i % 3) == 2 && 
+						Math.min(currentElementIndex % 3, i % 3) == 0)
+				{
+					continue;
+				}
+				
+				//Calculate shift and test to see if currentElement neighbour and aCell's neighbour is the same object.
+				int difference = currentElementIndex - i;
+				if(!(aCell.neighbours[currentElementIndex].neighbours[4 - difference] == aCell.neighbours[i]))
+				{
+					connectionsCorrect = false;
+				}
+			}
+		}
+		
+		return connectionsCorrect;
+	}
+	
+	/*
+	 * Test algorithmic interconnection test above.
+	 */
+	@Test
+	public void testNeighbourInterconnectionTest()
+	{
+		assertTrue(this.neighbourInterconnectionTest(this.aCell), "Algorithmic interconnection test should return true if manual permutation checks also return true.");
+		aCell.neighbours[0].neighbours[5] = null;
+		assertFalse(this.neighbourInterconnectionTest(this.aCell), "Algorithmic interconnection test should return false when cell interconnection is deliberately broken.");
+
+	}
+	
+	@Test
+	void doBirthNoNewNeighbours()
+	{
+		assertTrue(this.neighbourInterconnectionTest(this.aCell), "Initial check to ensure correct connection setup.");
+		aCell.doBirth();
+		assertTrue(this.neighbourInterconnectionTest(this.aCell), "Birthing cell should not have changed the neighbour interconnections.");
+	}
+	
+	
+	/*
+	 * Sets up this.aCell.neighbours to have a certain number of nulls
+	 */
+	private void addNullNeighbours(int[] notNullIndexes)
+	{
+		Cell[] initialGrid = new Cell[9];
+		for(int i = 0; i < notNullIndexes.length; i++)
+		{
+			if(notNullIndexes[i] == 4)
+			{
+				initialGrid[4] = this.aCell;
+			}
+			initialGrid[notNullIndexes[i]] = new Cell();
+		}
+		this.aCell.neighbours = initialGrid;
+		this.aCell.interconnectNeighbours();
+	}
+	
+	/*
+	 * Counts nulls in a cells neighbours array.
+	 */
+	private int countNulls(Cell aCell)
+	{
+		int nullCount = 0;
+		for(int i = 0; i < aCell.neighbours.length; i++)
+		{
+			if(!(aCell.neighbours[i] != null))
+			{
+				nullCount++;
+			}
+		}
+		return nullCount;
+	}
+	
+	@Test
+	void doBirthOneNewNeighbour()
+	{
+		//Setup cell neighbours.
+		int[] neighboursToAdd = {1,2,3,4,5,6,7,8};
+		this.addNullNeighbours(neighboursToAdd);
+		
+		//Check neighbours has sufficient nulls
+		int nullCount = this.countNulls(this.aCell);
+		assertFalse(this.aCell.neighbours[0] != null, "Neighbour at index 0 should be null.");
+		assertTrue(nullCount == 1, "There should be only one null in aCell.neighbours. Nulls found: " + nullCount);
+		
+		this.aCell.doBirth();
+		
+		//Check neighbours have been filled in correctly
+		nullCount = this.countNulls(this.aCell);
+		assertTrue(this.aCell.neighbours[0] != null, "Neighbour at index 0 should be null.");
+		assertTrue(nullCount == 0, "There should be no nulls in aCell.neighbours. Nulls found: " + nullCount);
+		assertTrue(this.neighbourInterconnectionTest(this.aCell), "Checking interconnection correct with new neighbour.");
+	}
+	
+	void doBirthTwoNewNeighbour()
+	{
+		//Setup cell neighbours.
+		int[] neighboursToAdd = {1,2,3,4,5,6,7};
+		this.addNullNeighbours(neighboursToAdd);
+		
+		//Check neighbours has sufficient nulls
+		int nullCount = this.countNulls(this.aCell);
+		assertTrue(this.aCell.neighbours[0] != null, "Neighbour at index 0 should be null.");
+		assertTrue(nullCount == 2, "There should be two nulls in aCell.neighbours. Nulls found: " + nullCount);
+		
+		this.aCell.doBirth();
+		
+		//Check neighbours have been filled in correctly
+		nullCount = this.countNulls(this.aCell);
+		assertTrue(this.aCell.neighbours[0] != null, "Neighbour at index 0 should be null.");
+		assertTrue(nullCount == 0, "There should be no nulls in aCell.neighbours. Nulls found: " + nullCount);
+		assertTrue(this.neighbourInterconnectionTest(this.aCell), "Checking interconnection correct with new neighbour.");
+	}
+	
+	public void doBirthCoreTester(int[] neighboursToAdd)
+	{
+		this.addNullNeighbours(neighboursToAdd);
+		
+		//Check neighbours has sufficient nulls
+		int nullCount = this.countNulls(this.aCell);
+		assertTrue(nullCount == 8 - (neighboursToAdd.length - 1), "There should be " + (8 - (neighboursToAdd.length - 1)) + " nulls in aCell.neighbours. Nulls found: " + nullCount);
+		
+		this.aCell.doBirth();
+		
+		//Check neighbours have been filled in correctly
+		nullCount = this.countNulls(this.aCell);
+		assertTrue(nullCount == 0, "There should be no nulls in aCell.neighbours. Nulls found: " + nullCount);
+		assertTrue(this.neighbourInterconnectionTest(this.aCell), "Checking interconnection correct with new neighbour.");
+	}
+	
+	@Test
+	void doBirthTestDriver()
+	{
+		int[] neighboursToAdd;
+		for(int i = 0; i <= this.aCell.neighbours.length; i++)
+		{
+			neighboursToAdd = new int[i];
+			for(int j = 0; j < i; j++)
+			{
+				neighboursToAdd[j] = j;
+			}
+			this.doBirthCoreTester(neighboursToAdd);
+		}
+	}
 
 }

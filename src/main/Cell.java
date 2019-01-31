@@ -1,5 +1,10 @@
 package main;
 
+/*
+ * TODO:
+ * Add grid extension when cell turned alive to Cell class.
+ */
+
 class Cell 
 {
 	private boolean isAlive = false;
@@ -53,25 +58,90 @@ class Cell
 		//For each cell in this.neighbours
 		for(int currentElementIndex = 0; currentElementIndex < this.neighbours.length; currentElementIndex++)
 		{
-			//Calculate indexes of neighbours that are connected to current Element
-			int lowBoundary = Math.max(currentElementIndex - 4, 0);
-			int highBoundary = Math.min(currentElementIndex + 4, neighbours.length - 1);
-			
-			//Calculate new index relative to current element, based on OG index.
-			for(int i = lowBoundary; i <= highBoundary; i++)
+			if(this.neighbours[currentElementIndex] != null)
 			{
-				//Catch range values that are not adjacent to cell.
-				if(Math.max(currentElementIndex % 3, i % 3) == 2 && 
-						Math.min(currentElementIndex % 3, i % 3) == 0)
-				{
-					continue;
-				}
+				//Calculate indexes of neighbours that are connected to current Element
+				int lowBoundary = Math.max(currentElementIndex - 4, 0);
+				int highBoundary = Math.min(currentElementIndex + 4, this.neighbours.length - 1);
 				
-				//Calculate shift and assign to currentElement's neighbours.
-				int difference = currentElementIndex - i;
-				neighbours[currentElementIndex].neighbours[4 - difference] = neighbours[i];
+				//Calculate new index relative to current element, based on OG index.
+				for(int i = lowBoundary; i <= highBoundary; i++)
+				{
+					//Catch range values that are not adjacent to cell.
+					if(Math.max(currentElementIndex % 3, i % 3) == 2 && 
+							Math.min(currentElementIndex % 3, i % 3) == 0)
+					{
+						continue;
+					}
+					
+					//Calculate shift and assign to currentElement's neighbours.
+					int difference = currentElementIndex - i;
+					this.neighbours[currentElementIndex].neighbours[4 - difference] = this.neighbours[i];
+				}
 			}
 		}
 	}
 	
+	/**
+	 * Handles the process of switching the cell from dead to alive state.
+	 */
+	public void doBirth()
+	{
+		this.setAlive(true);
+		this.informNeighboursAliveStatus();
+		this.extendGrid();
+		this.interconnectNeighbours();
+		
+	}
+	
+	/**
+	 * Tells each non-null neighbour about this cells change in isAlive state.
+	 */
+	private void informNeighboursAliveStatus()
+	{
+		for(int i = 0; i < this.neighbours.length; i++)
+		{
+			if(this.neighbours[i] != null)
+			{
+				if(this.isAlive)
+				{
+					this.neighbours[i].neighbourBorn();
+				}
+				else
+				{
+					this.neighbours[i].neighbourDied();
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Increments aliveNeighbourCount
+	 */
+	public void neighbourBorn()
+	{
+		this.aliveNeighbourCount++;
+	}
+	
+	/**
+	 * Decrements aliveNeighbourCount.
+	 */
+	public void neighbourDied() 
+	{
+		this.aliveNeighbourCount--;
+	}
+	
+	/**
+	 * Extends the game grid by filling out missing neighbours around this cell with dead cells.
+	 */
+	private void extendGrid()
+	{
+		for(int i = 0; i < this.neighbours.length; i++)
+		{
+			if(!(this.neighbours[i] != null))
+			{
+				this.neighbours[i] = new Cell();
+			}
+		}
+	}
 }
