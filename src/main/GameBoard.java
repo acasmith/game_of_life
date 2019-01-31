@@ -48,7 +48,7 @@ public class GameBoard
 		for(int i = 0; i < aliveIndexes.length; i ++)
 		{
 			Cell bornCell = originCell.neighbours[aliveIndexes[i]];
-			bornCell.setAlive(true);
+			bornCell.doBirth();
 			aliveCells.add(bornCell);
 		}
 		

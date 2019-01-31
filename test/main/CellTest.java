@@ -2,6 +2,8 @@ package main;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Arrays;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -392,6 +394,49 @@ class CellTest {
 			}
 			this.doBirthCoreTester(neighboursToAdd);
 		}
+	}
+	
+	
+	//Check whether new cells correctly register as neighbours of other cells outside originCells neighbours.
+	@Test 
+	void doBirthNewCellPropogationIndexes0And2()
+	{
+		//Initial tests
+		assertTrue(this.aCell.neighbours[0] != null);
+		assertTrue(this.aCell.neighbours[2] != null);
+		assertFalse(this.aCell.neighbours[0].neighbours[2] != null, "Neighbour[0] should not have a neighbour at index 2 yet.");
+		assertFalse(this.aCell.neighbours[2].neighbours[0] != null, "Neighbour[2] should not have a neighbour at index 0 yet.");
+		//Birth a new cell which should create neighbours that connect with neighbour[2]
+		this.aCell.neighbours[0].doBirth();
+		//Post operation tests
+		assertTrue(this.aCell.neighbours[0] != null);
+		assertTrue(this.aCell.neighbours[2] != null);
+		assertTrue(this.aCell.neighbours[2].neighbours[0] != null, "Neighbour[2] should have a neighbour at index 0.");
+		assertTrue(this.aCell.neighbours[0].neighbours[2] != null, "Neighbour[0] should have a neighbour at index 2.");
+	}
+	
+	//Test whether the new cells birthed from two different origin cells get interconnected.
+	@Test 
+	void doBirthNewCellPropogationIndexes3And1()
+	{
+		//Initial tests
+		assertFalse(this.aCell.neighbours[1].neighbours[0] != null, "Neighbour[1] should not have a neighbour at index 0 yet.");
+		assertFalse(this.aCell.neighbours[3].neighbours[0] != null, "Neighbour[3] should not have a neighbour at index 0 yet.");
+		//Birth a new cell which should create neighbours that connect with neighbour[2]
+		this.aCell.neighbours[1].doBirth();
+		this.aCell.neighbours[3].doBirth();
+		//this.aCell.neighbours[0].doBirth();
+		//Post operation tests
+		assertTrue(this.aCell.neighbours[1].neighbours[0] != null, "Neighbour[1] should have a neighbour at index 0.");
+		assertTrue(this.aCell.neighbours[1].neighbours[0].neighbours[6] != null, "Neighbour[1] should have a neighbour at neighbours[0].neighbours[6].");
+		assertTrue(this.aCell.neighbours[3].neighbours[0].neighbours[2] != null, "Neighbour[3] should have a neighbour at neighbours[0].neighbours[2].");
+		assertTrue(this.aCell.neighbours[3].neighbours[0] != null, "Neighbour[3] should have a neighbour at index 0.");
+		assertTrue(this.aCell.neighbours[1].neighbours[0].neighbours[6] == this.aCell.neighbours[3].neighbours[0], 
+				"The two new cells created by separate births should reference each other as neighbours.");
+		assertTrue(this.aCell.neighbours[3].neighbours[0].neighbours[2] == this.aCell.neighbours[1].neighbours[0], 
+				"The two new cells created by separate births should reference each other as neighbours.");
+		assertTrue(this.aCell.neighbours[1].neighbours[0].neighbours[3] == this.aCell.neighbours[3].neighbours[0].neighbours[1], 
+				"The two new cells should share common neighbours.");
 	}
 
 }

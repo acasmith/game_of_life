@@ -1,8 +1,11 @@
 package main;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /*
  * TODO:
- * Add grid extension when cell turned alive to Cell class.
+ * Code walkthrough from startup!
  */
 
 class Cell 
@@ -53,8 +56,9 @@ class Cell
 	 * adjacent to it on the grid.
 	 * 
 	 */
-	public void interconnectNeighbours()
+	public Set<Cell> interconnectNeighbours()
 	{
+		Set<Cell> updatedCells = new HashSet<>();
 		//For each cell in this.neighbours
 		for(int currentElementIndex = 0; currentElementIndex < this.neighbours.length; currentElementIndex++)
 		{
@@ -74,12 +78,31 @@ class Cell
 						continue;
 					}
 					
+					/* Catch case where this cells recorded value is null.
+					 * This prevents nulls replacing cell references when
+					 * changes are propagated by calling interconnect on updated cells.
+					 */
+					if(!(this.neighbours[i] != null))
+					{
+						continue;
+					}
+					
 					//Calculate shift and assign to currentElement's neighbours.
 					int difference = currentElementIndex - i;
-					this.neighbours[currentElementIndex].neighbours[4 - difference] = this.neighbours[i];
+					if(this.neighbours[currentElementIndex].neighbours[4 - difference] != this.neighbours[i])
+					{
+						this.neighbours[currentElementIndex].neighbours[4 - difference] = this.neighbours[i];
+						updatedCells.add(this.neighbours[currentElementIndex].neighbours[4 - difference]);
+					}
 				}
 			}
 		}
+		
+		for(Cell aCell : updatedCells)
+		{
+			aCell.interconnectNeighbours();
+		}
+		return updatedCells;
 	}
 	
 	/**
@@ -90,7 +113,14 @@ class Cell
 		this.setAlive(true);
 		this.informNeighboursAliveStatus();
 		this.extendGrid();
-		this.interconnectNeighbours();
+		//Interconnect new cells with existing neighbours, then propagate new cell references through the grid.
+		Set<Cell> updatedCells = this.interconnectNeighbours();
+		/*
+		for(Cell aCell : updatedCells)
+		{
+			aCell.interconnectNeighbours();
+		}
+		*/
 		
 	}
 	
