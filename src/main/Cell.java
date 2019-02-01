@@ -11,8 +11,8 @@ import java.util.Set;
 
 class Cell 
 {
-	int x;	//x coordinate on gameboard relative to the origin cell.
-	int y;  //y coordinate on the gameboard relative to the origin cell.
+	int x;	//x coordinate on gameboard relative to the origin cell. -ve to the left of origin, +ve to the right of origin.
+	int y;  //y coordinate on the gameboard relative to the origin cell. -ve below origin, +ve above origin.
 	private boolean isAlive = false;
 	private int aliveNeighbourCount = 0;
 	/*
@@ -29,6 +29,7 @@ class Cell
 	{
 		this.x = 0;
 		this.y = 0;
+		this.neighbours[4] = this;
 	}
 	
 	/**
@@ -40,6 +41,7 @@ class Cell
 	{
 		this.x = x;
 		this.y = y;
+		this.neighbours[4] = this;
 	}
 
 	/*
@@ -104,7 +106,8 @@ class Cell
 					
 					/* Catch case where this cells recorded value is null.
 					 * This prevents nulls replacing cell references when
-					 * changes are propagated by calling interconnect on updated cells.
+					 * changes are propagated through grid by calling interconnect on cells 
+					 * whose neighbours array has just been updated.
 					 */
 					if(!(this.neighbours[i] != null))
 					{
@@ -122,6 +125,7 @@ class Cell
 			}
 		}
 		
+		//Recursive call to propagate changes through grid.
 		for(Cell aCell : updatedCells)
 		{
 			aCell.interconnectNeighbours();
@@ -135,16 +139,10 @@ class Cell
 	public void doBirth()
 	{
 		this.setAlive(true);
-		this.informNeighboursAliveStatus();
 		this.extendGrid();
 		//Interconnect new cells with existing neighbours, then propagate new cell references through the grid.
-		Set<Cell> updatedCells = this.interconnectNeighbours();
-		/*
-		for(Cell aCell : updatedCells)
-		{
-			aCell.interconnectNeighbours();
-		}
-		*/
+		this.interconnectNeighbours();
+		this.informNeighboursAliveStatus();
 		
 	}
 	
@@ -194,8 +192,21 @@ class Cell
 		{
 			if(!(this.neighbours[i] != null))
 			{
-				this.neighbours[i] = new Cell();
+				//Got to be a math way to do this without using a hardcoded array?
+				int[] diffArray = {-1, 0, 1}; //Array index contains the amount the new cell coordinate needs to shift by, relative to origin cell.
+				int xCoord = this.getX() + diffArray[i % 3];
+				int yCoord = this.getY() + (diffArray[i / 3] * -1);
+				this.neighbours[i] = i == 4 ? this : new Cell(xCoord, yCoord);
 			}
 		}
+	}
+	
+	/**
+	 * Handles the initial setup of the grid when the cell is the original, first cell in the grid.
+	 */
+	public void makeOriginCell()
+	{
+		this.doBirth();
+		this.setAlive(false);
 	}
 }

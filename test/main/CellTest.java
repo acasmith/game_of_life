@@ -438,5 +438,59 @@ class CellTest {
 		assertTrue(this.aCell.neighbours[1].neighbours[0].neighbours[3] == this.aCell.neighbours[3].neighbours[0].neighbours[1], 
 				"The two new cells should share common neighbours.");
 	}
+	
+	public void testAllNeighbourCoords()
+	{
+		//Algorithmically test every value in range.
+		int[] diffArray = {-1, 0, 1};
+		for(int i = 0; i < 9; i++)
+		{
+			assertTrue(this.aCell.neighbours[i].getX() == this.aCell.getX() + diffArray[i % 3], "Neighbour at index " + i + " y coordinate should be " + (this.aCell.getY() + diffArray[i % 3]));
+			assertTrue(this.aCell.neighbours[i].getY() == this.aCell.getY() + (diffArray[i / 3] * -1), "Neighbour at index " + i + " y coordinate should be " + (this.aCell.getY() + (diffArray[i / 3] * -1)));
+		}
+	}
 
+	//Test coords are what you think they are.
+	@Test 
+	void checkOriginNeighbourCoords()
+	{
+		this.aCell = new Cell();
+		assertTrue(this.aCell.getX() == 0, "Origin cell's x coordinate should be 0");
+		assertTrue(this.aCell.getY() == 0, "Origin cell's y coordinate should be 0");
+		
+		this.aCell.makeOriginCell();
+		
+		//Manually test centre and range extremes.
+		assertTrue(this.aCell.getX() == 0, "Origin cell's x coordinate should be 0");
+		assertTrue(this.aCell.getY() == 0, "Origin cell's y coordinate should be 0");
+		
+		assertTrue(this.aCell.neighbours[0].getX() == -1, "Neighbours at index 0 x coordinate should be -1");
+		assertTrue(this.aCell.neighbours[0].getY() == 1, "Neighbour at index 0 y coordinate should be 1");
+		
+		assertTrue(this.aCell.neighbours[8].getX() == 1, "Neighbours at index 8 x coordinate should be 1");
+		assertTrue(this.aCell.neighbours[8].getY() == -1, "Neighbour at index 0 y coordinate should be -1");
+		
+		this.testAllNeighbourCoords();
+		
+	}
+	
+	@Test
+	void checkNonOriginNeighbourCoords()
+	{
+		this.aCell = new Cell();
+		this.aCell.makeOriginCell();
+		this.aCell.neighbours[0].doBirth();
+		this.aCell = this.aCell.neighbours[0];
+		
+		assertTrue(this.aCell.getX() == -1, "Starting cell for this test case should have x coordinate of -1.");
+		assertTrue(this.aCell.getY() == 1, "Starting cell for this test case should have y coordinate of 1.");
+		
+		assertTrue(this.aCell.neighbours[2].getX() == (this.aCell.getX() + 1), "Neighbours at index 2 x coordinate should be " + (this.aCell.getX() + 1) + ", was " + (this.aCell.neighbours[2].getX()));
+		assertTrue(this.aCell.neighbours[2].getY() == (this.aCell.getY() + 1), "Neighbours at index 2 y coordinate should be " + (this.aCell.getY() + 1) + ", was " + (this.aCell.neighbours[2].getY()));
+		
+		assertTrue(this.aCell.neighbours[6].getX() == (this.aCell.getX() -1), "Neighbours at index 6 x coordinate should be " + (this.aCell.getX() - 1) + ", was " + (this.aCell.neighbours[6].getX()));
+		assertTrue(this.aCell.neighbours[6].getY() == (this.aCell.getY() -1), "Neighbours at index 6 y coordinate should be " + (this.aCell.getY() - 1) + ", was " + (this.aCell.neighbours[6].getY()));
+		
+		this.testAllNeighbourCoords();
+	}
 }

@@ -30,16 +30,8 @@ public class GameBoard
 		//Create Cell
 		Cell originCell = new Cell();
 		
-		//Fill neighbours with dead cells.
-		Cell[] initialGrid = new Cell[9];
-		for(int i = 0; i < initialGrid.length; i++)
-		{
-			initialGrid[i] = i == 4 ? originCell : new Cell();
-		}
-		originCell.neighbours = initialGrid;
-		
-		//Interconnect all cells in the initial grid.
-		originCell.interconnectNeighbours();
+		//Set cell as the origin of the gameboard.
+		originCell.makeOriginCell();
 		
 		//Create list for aliveCells. Locally scoped, NOT the instance variable.
 		List<Cell> aliveCells = new ArrayList<>();
