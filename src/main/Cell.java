@@ -11,6 +11,8 @@ import java.util.Set;
 
 class Cell 
 {
+	int x;	//x coordinate on gameboard relative to the origin cell.
+	int y;  //y coordinate on the gameboard relative to the origin cell.
 	private boolean isAlive = false;
 	private int aliveNeighbourCount = 0;
 	/*
@@ -21,17 +23,37 @@ class Cell
 	public Cell[] neighbours = new Cell[9];	
 	
 	/**
-	 * Constructor
+	 * 0-arg Constructor. Set's the x and y coordinates to 0 (so it's the relative centre of the gameboard).
 	 */
 	public Cell()
 	{
-		
+		this.x = 0;
+		this.y = 0;
+	}
+	
+	/**
+	 * 2-arg constructor.
+	 * @param x the x-coordinate of the cell relative to the origin cell.
+	 * @param y the y-coordinate of the cell relative to the origin cell.
+	 */
+	public Cell(int x, int y)
+	{
+		this.x = x;
+		this.y = y;
 	}
 
 	/*
 	 * Start Getters/Setters
 	 */
 	
+	public int getX() {
+		return x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
 	public boolean isAlive() {
 		return isAlive;
 	}
