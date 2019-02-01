@@ -54,42 +54,48 @@ public class GameBoard
 	 */
 	public void printGameBoard()
 	{
-		int minX = 0;
-		int maxX = 0;
-		int minY = 0;
-		int maxY = 0;
+		String result = "All cells are dead.";
 		
-		//Iterate over aliveCells to find x and y boundaries of board.
-		for(Cell aliveCell : this.aliveCells)
+		if(!this.aliveCells.isEmpty())
 		{
-			int x = aliveCell.getX();
-			int y = aliveCell.getY();
+			int minX = 0;
+			int maxX = 0;
+			int minY = 0;
+			int maxY = 0;
 			
-			minX = x < minX ? x : minX;
-			maxX = x > maxX ? x : maxX;
+			//Iterate over aliveCells to find x and y boundaries of board.
+			for(Cell aliveCell : this.aliveCells)
+			{
+				int x = aliveCell.getX();
+				int y = aliveCell.getY();
+				
+				minX = x < minX ? x : minX;
+				maxX = x > maxX ? x : maxX;
+				
+				minY = y < minY ? y : minY;
+				maxY = y > maxY ? y : maxY;
+			}
 			
-			minY = y < minY ? y : minY;
-			maxY = y > maxY ? y : maxY;
+			//Calculate grid dimensions and create grid. Dimensions have +1 because 0 needs to be represented as well!
+			int xDimension = Math.abs(minX) + maxX + 1;
+			int yDimension = Math.abs(minY) + maxY + 1;
+			int[][] gameGrid = new int[xDimension][yDimension];
+			
+			//Mark alive cells in grid.
+			int originX = xDimension / 2;
+			int originY = yDimension / 2;
+			
+			for(Cell aliveCell : this.aliveCells)
+			{
+				int cellX = originX + aliveCell.getX();
+				int cellY = originY - aliveCell.getY();	// Uses - not addition because array indexes are not the same as Cartesian graphs! Y get's smaller as it goes vertically up.
+				gameGrid[cellX][cellY] = 1;
+			}
+			
+			//Print grid.
+			result = Arrays.toString(gameGrid);
 		}
 		
-		//Calculate grid dimensions and create grid. Dimensions have +1 because 0 needs to be represented as well!
-		int xDimension = Math.abs(minX) + maxX + 1;
-		int yDimension = Math.abs(minY) + maxY + 1;
-		int[][] gameGrid = new int[xDimension][yDimension];
-		
-		//Mark alive cells in grid.
-		int originX = xDimension / 2;
-		int originY = yDimension / 2;
-		
-		for(Cell aliveCell : this.aliveCells)
-		{
-			int cellX = originX + aliveCell.getX();
-			int cellY = originY - aliveCell.getY();	// Uses - not addition because array indexes are not the same as Cartesian graphs! Y get's smaller as it goes vertically up.
-			gameGrid[cellX][cellY] = 1;
-		}
-		
-		//Print grid.
-		Arrays.toString(gameGrid);
-		
+		System.out.println(result);
 	}
 }
