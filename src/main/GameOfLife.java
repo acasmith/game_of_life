@@ -25,13 +25,14 @@ class GameOfLife
 	public GameOfLife(int numberOfIterations, int[] aliveIndexes)
 	{
 		this.numberOfIterations = numberOfIterations;
+		this.newGame(aliveIndexes);
 	}
 	
 	/**
 	 * Initiates a new Game of Life.
 	 * @param aliveIndexes an array containing the integer indexes of the initial alive cells in the 3x3 starting grid.
 	 */
-	public void newGame(int[] aliveIndexes)
+	private void newGame(int[] aliveIndexes)
 	{
 		this.aBoard = new GameBoard(aliveIndexes);
 		
@@ -44,5 +45,10 @@ class GameOfLife
 	private void doIteration()
 	{
 		
+	}
+	
+	public void printGameBoard()
+	{
+		this.aBoard.printGameBoard();
 	}
 }

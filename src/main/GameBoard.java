@@ -52,7 +52,7 @@ public class GameBoard
 	 * Method to print out the current status of the game board.
 	 * Limits of what is displayed are set by the alive cells positioned farthest from the origin (0, 0).
 	 */
-	public void printGameBoard()
+	public String printGameBoard()
 	{
 		String result = "All cells are dead.";
 		
@@ -81,10 +81,11 @@ public class GameBoard
 			int yDimension = Math.abs(minY) + maxY + 1;
 			int[][] gameGrid = new int[xDimension][yDimension];
 			
-			//Mark alive cells in grid.
-			int originX = xDimension / 2;
-			int originY = yDimension / 2;
+			//Find originCell index relative to array indexes.
+			int originX = Math.abs(minX);
+			int originY = Math.abs(maxY);
 			
+			//Mark alive cells in grid.
 			for(Cell aliveCell : this.aliveCells)
 			{
 				int cellX = originX + aliveCell.getX();
@@ -92,10 +93,42 @@ public class GameBoard
 				gameGrid[cellX][cellY] = 1;
 			}
 			
-			//Print grid.
-			result = Arrays.toString(gameGrid);
+			//Format grid as string.
+			result = this.formatGameGrid(gameGrid);
 		}
 		
 		System.out.println(result);
+		
+		return result;
+	}
+	
+	/**
+	 * Changes the format of the game grid from 2d array to string.
+	 * 
+	 */
+	private String formatGameGrid(int[][] gameGrid)
+	{
+		StringBuilder gridString = new StringBuilder("  ");
+		
+		//Add column indexes above grid
+		for(int columnIndex = 0; columnIndex < gameGrid[0].length; columnIndex++)
+		{
+			gridString.append(columnIndex + " ");
+		}
+		gridString.append("\n");
+		
+		for(int rowIndex = 0; rowIndex < gameGrid.length; rowIndex++)
+		{
+			StringBuilder rowString = new StringBuilder(rowIndex + "|");
+			for(int columnIndex = 0; columnIndex < gameGrid[rowIndex].length; columnIndex++)
+			{
+				String toAppend = gameGrid[rowIndex][columnIndex] == 1 ? "A|" : " |";
+				rowString.append(toAppend);
+			}
+			rowString.append("\n");
+			gridString.append(rowString);
+		}
+		
+		return gridString.toString();
 	}
 }
