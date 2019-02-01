@@ -5,7 +5,8 @@ import java.util.Set;
 
 /*
  * TODO:
- * Code walkthrough from startup!
+ * Algo to print off game board
+ * Work on main algo.
  */
 
 class Cell 
@@ -54,7 +55,8 @@ class Cell
 	/** 
 	 * Interconnects every cell in this cells neighbours array with every cell in the array that's 
 	 * adjacent to it on the grid.
-	 * 
+	 * Tracks every cell that has a neighbour reference changed, then calls this process on it again
+	 * to ensure changes are propagated through grid.
 	 */
 	public Set<Cell> interconnectNeighbours()
 	{
