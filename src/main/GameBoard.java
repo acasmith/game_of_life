@@ -117,6 +117,7 @@ public class GameBoard
 		}
 		gridString.append("\n");
 		
+		//Add each element to the string, a row at a time.
 		for(int rowIndex = 0; rowIndex < gameGrid.length; rowIndex++)
 		{
 			StringBuilder rowString = new StringBuilder(rowIndex + "|");

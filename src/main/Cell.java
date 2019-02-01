@@ -5,7 +5,6 @@ import java.util.Set;
 
 /*
  * TODO:
- * Algo to print off game board
  * Work on main algo.
  */
 
