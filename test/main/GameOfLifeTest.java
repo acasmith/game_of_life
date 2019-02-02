@@ -69,7 +69,7 @@ class GameOfLifeTest {
 		GameOfLife aGame = new GameOfLife(2);
 		String result = aGame.startGame(aliveIndexes);
 		System.out.println(result);
-		assertTrue(result.equals("Game ended: all cells are dead."), "Game should end with statement: \"Game ended: all cells are dead.\"");
+		assertTrue(result.equals("Game ended: Max iterations (2) reached."), "Game should end with statement: \"Game ended: Max iterations (2) reached.\"");
 	}
 
 	@Test
@@ -79,7 +79,7 @@ class GameOfLifeTest {
 		GameOfLife aGame = new GameOfLife(2);
 		String result = aGame.startGame(aliveIndexes);
 		System.out.println(result);
-		assertTrue(result.equals("Game ended: all cells are dead."), "Game should end with statement: \"Game ended: all cells are dead.\"");
+		assertTrue(result.equals("Game ended: Max iterations (2) reached."), "Game should end with statement: \"Game ended: Max iterations (2) reached.\"");
 	}
 	
 	@Test
@@ -89,6 +89,16 @@ class GameOfLifeTest {
 		GameOfLife aGame = new GameOfLife(2);
 		String result = aGame.startGame(aliveIndexes);
 		System.out.println(result);
-		assertTrue(result.equals("Game ended: all cells are dead."), "Game should end with statement: \"Game ended: all cells are dead.\"");
+		assertTrue(result.equals("Game ended: Max iterations (2) reached."), "Game should end with statement: \"Game ended: Max iterations (2) reached.\"");
+	}
+	
+	@Test
+	void test50IterationsWithAllAliveCells()
+	{
+		int[] aliveIndexes = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+		GameOfLife aGame = new GameOfLife(50);
+		String result = aGame.startGame(aliveIndexes);
+		System.out.println(result);
+		assertTrue(result.equals("Game ended: Max iterations (50) reached."), "Game should end with statement: \"Game ended: Max iterations (50) reached.\"");
 	}
 }

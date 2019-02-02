@@ -1,7 +1,9 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 
@@ -74,8 +76,26 @@ class GameOfLife
 			}
 		}
 		
-		//2. Check all alive cell neighbours for creation
-
+		//2. Check all dead neighbours of alive cells for creation.
+		Set<Cell> newBorns = new HashSet<>();
+		for(Cell aliveCell : this.aBoard.aliveCells)
+		{
+			for(Cell neighbourCell : aliveCell.neighbours)
+			{
+				if(!neighbourCell.isAlive() && neighbourCell.getAliveNeighbourCount() == 3)
+				{
+					newBorns.add(neighbourCell);
+				}
+			}
+		}
+		
+		//Add new cells to grid.
+		for(Cell newBorn : newBorns)
+		{
+			newBorn.doBirth();
+			this.aBoard.aliveCells.add(newBorn);
+		}
+		
 		//3. Destroy marked cells
 		for(Cell markedCell : markedCells)
 		{
