@@ -89,7 +89,7 @@ public class GameBoard
 			for(Cell aliveCell : this.aliveCells)
 			{
 				int cellX = originX + aliveCell.getX();
-				int cellY = originY - aliveCell.getY();	// Uses - not addition because array indexes are not the same as Cartesian graphs! Y get's smaller as it goes vertically up.
+				int cellY = originY - aliveCell.getY();	// Uses subtraction not addition because array indexes are not the same as Cartesian graphs! Y get's smaller as it goes vertically up.
 				gameGrid[cellX][cellY] = 1;
 			}
 			

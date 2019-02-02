@@ -7,7 +7,8 @@ import java.util.Set;
  * TODO:
  * Work on main algo.
  * Add checks for initial live cells array to avoid out of range exception if < 0 or > 8.
- * Implement a get neighbour, add neighbour methods to stop directly referencing array, in case the data structure is ever changed.
+ * Put initial alive cells arary into a set, so you avoid issues with multiples of same index.
+ * 
  */
 
 class Cell 
@@ -170,7 +171,7 @@ class Cell
 	{
 		for(int i = 0; i < this.getNeighboursLength(); i++)
 		{
-			if(this.getNeighbour(i) != null)
+			if(this.getNeighbour(i) != null && i != 4)
 			{
 				if(this.isAlive)
 				{
@@ -198,6 +199,11 @@ class Cell
 	public void neighbourDied() 
 	{
 		this.aliveNeighbourCount--;
+		
+		if(this.getAliveNeighbourCount()  <= 0)
+		{
+			this.cellPermaDeath();
+		}
 	}
 	
 	/**
@@ -247,8 +253,35 @@ class Cell
 			{
 				this.getNeighbour(i).neighbourDied();
 			}
-			
-			if(this.getAliveNeighbourCount()  <= 0)
+		}
+		
+		if(this.getAliveNeighbourCount() <= 0)
+		{
+			this.cellPermaDeath();
+		}
+	}
+	
+	public int countAliveNeighbours()
+	{
+		int result = 0;
+		for(Cell aCell : this.neighbours)
+		{
+			if(aCell != this && aCell.isAlive())
+			{
+				result++;
+			}
+		}
+		return result;
+	}
+	
+	/*
+	 * Removes any references to the cell, and removes any references the cell has to other cells.
+	 */
+	private void cellPermaDeath()
+	{
+		for(int i = 0; i < this.getNeighboursLength(); i++)
+		{
+			if(this.getNeighbour(i) != null)
 			{
 				int shift = 4 + (4 - i);
 				this.getNeighbour(i).setNeighbour(shift, null);

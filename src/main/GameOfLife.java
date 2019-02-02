@@ -46,13 +46,13 @@ class GameOfLife
 		String turnResult = "";
 		
 		//Make checks.
-		if(currentIteration >= this.maxIterations)
-		{
-			turnResult = "Game ended: Max iterations (" + this.maxIterations + ") reached.";
-		}
-		else if(this.aBoard.aliveCells.isEmpty())
+		if(this.aBoard.aliveCells.isEmpty())
 		{
 			turnResult = "Game ended: all cells are dead.";
+		}
+		else if(currentIteration >= this.maxIterations)
+		{
+			turnResult = "Game ended: Max iterations (" + this.maxIterations + ") reached.";
 		}
 		
 		//If checks failed, print reason and finish game.
@@ -66,6 +66,8 @@ class GameOfLife
 		List<Cell> markedCells = new ArrayList<>();
 		for(Cell aliveCell : this.aBoard.aliveCells)
 		{
+			System.out.println(aliveCell.getAliveNeighbourCount());
+			System.out.println(aliveCell.countAliveNeighbours());
 			if(aliveCell.getAliveNeighbourCount() < 2 ||
 					aliveCell.getAliveNeighbourCount() > 3)
 			{
@@ -74,18 +76,16 @@ class GameOfLife
 		}
 		
 		//2. Check all alive cell neighbours for creation
-		
-		/* TODO:
-		 * Destroy cells, and all the logic/cleanup that goes with that.
-		 */
+
 		//3. Destroy marked cells
 		for(Cell markedCell : markedCells)
 		{
 			markedCell.kill();
+			this.aBoard.aliveCells.remove(markedCell);
 		}
 		
 		//4. Create board visualisation and print results
-		System.out.println(this.printGameBoard());
+		System.out.println("Turn " + (currentIteration + 1)+ ": \n" + this.printGameBoard() + "\n");
 		
 		//5. Recursive call
 		return this.doIteration(currentIteration + 1);
