@@ -16,6 +16,7 @@ public class GameBoard
 	
 	/**
 	 * Constructor
+	 * @param int[] aliveIndexes an integer array represented the cells in the original grid to initially set to alive.
 	 */
 	public GameBoard(int[] aliveIndexes)
 	{
@@ -51,6 +52,7 @@ public class GameBoard
 	/**
 	 * Method to print out the current status of the game board.
 	 * Limits of what is displayed are set by the alive cells positioned farthest from the origin (0, 0).
+	 * Origin cell is always represented as either '0' if it's alive, or '.' if it's dead.
 	 */
 	public String printGameBoard()
 	{
@@ -93,6 +95,8 @@ public class GameBoard
 				gameGrid[cellY][cellX] = 1;
 			}
 			
+			gameGrid[originY][originX] = gameGrid[originY][originX] == 1 ? 9 : 8;
+			
 			//Format grid as string.
 			result = this.formatGameGrid(gameGrid);
 		}
@@ -121,7 +125,23 @@ public class GameBoard
 			StringBuilder rowString = new StringBuilder(rowIndex + "|");
 			for(int columnIndex = 0; columnIndex < gameGrid[rowIndex].length; columnIndex++)
 			{
-				String toAppend = gameGrid[rowIndex][columnIndex] == 1 ? "A|" : " |";
+				String toAppend = "";
+				if(gameGrid[rowIndex][columnIndex] == 9)
+				{
+					toAppend = "0|";
+				}
+				else if(gameGrid[rowIndex][columnIndex] == 8)
+				{
+					toAppend = ".|";
+				}
+				else if(gameGrid[rowIndex][columnIndex] == 1)
+				{
+					toAppend = "A|";
+				}
+				else
+				{
+					toAppend = " |";
+				}
 				rowString.append(toAppend);
 			}
 			rowString.append("\n");

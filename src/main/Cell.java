@@ -5,7 +5,7 @@ import java.util.Set;
 
 /*
  * TODO:
- * Work on main algo.
+ * Test main algo.
  * Add checks for initial live cells array to avoid out of range exception if < 0 or > 8.
  * Put initial alive cells arary into a set, so you avoid issues with multiples of same index.
  * 
