@@ -97,8 +97,6 @@ public class GameBoard
 			result = this.formatGameGrid(gameGrid);
 		}
 		
-		System.out.println(result);
-		
 		return result;
 	}
 	

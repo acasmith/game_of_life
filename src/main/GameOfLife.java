@@ -13,28 +13,27 @@ import java.util.List;
  */
 
 class GameOfLife
-{
-	public List<Cell> aliveCells = new ArrayList<>();
-	
+{	
 	GameBoard aBoard;
-	int numberOfIterations;
+	int maxIterations;
 	
 	/**
 	 * Constructor
 	 */
-	public GameOfLife(int numberOfIterations, int[] aliveIndexes)
+	public GameOfLife(int maxIterations)
 	{
-		this.numberOfIterations = numberOfIterations;
-		this.newGame(aliveIndexes);
+		this.maxIterations = maxIterations;
 	}
 	
 	/**
 	 * Initiates a new Game of Life.
 	 * @param aliveIndexes an array containing the integer indexes of the initial alive cells in the 3x3 starting grid.
 	 */
-	private void newGame(int[] aliveIndexes)
+	public String startGame(int[] aliveIndexes)
 	{
 		this.aBoard = new GameBoard(aliveIndexes);
+		String finalResult = this.doIteration(0);
+		return finalResult;
 		
 	}
 
@@ -42,13 +41,57 @@ class GameOfLife
 	 * Causes the next iteration in the game to occur by adding new live cells and killing others.
 	 * Checks for the end states of no alive cells and maximum iterations.
 	 */
-	private void doIteration()
+	private String doIteration(int currentIteration)
 	{
+		String turnResult = "";
 		
+		//Make checks.
+		if(currentIteration >= this.maxIterations)
+		{
+			turnResult = "Game ended: Max iterations (" + this.maxIterations + ") reached.";
+		}
+		else if(this.aBoard.aliveCells.isEmpty())
+		{
+			turnResult = "Game ended: all cells are dead.";
+		}
+		
+		//If checks failed, print reason and finish game.
+		if(turnResult != "")
+		{
+			return turnResult;
+		}
+		
+		//Turn actions
+		//1. Mark for deletion
+		List<Cell> markedCells = new ArrayList<>();
+		for(Cell aliveCell : this.aBoard.aliveCells)
+		{
+			if(aliveCell.getAliveNeighbourCount() < 2 ||
+					aliveCell.getAliveNeighbourCount() > 3)
+			{
+				markedCells.add(aliveCell);
+			}
+		}
+		
+		//2. Check all alive cell neighbours for creation
+		
+		//3. Destroy marked cells
+		for(Cell markedCell : markedCells)
+		{
+			markedCell.kill();
+		}
+		
+		//4. Create board visualisation and print results
+		System.out.println(this.printGameBoard());
+		
+		//5. Recursive call
+		return this.doIteration(currentIteration + 1);
 	}
 	
-	public void printGameBoard()
+	public String printGameBoard()
 	{
-		this.aBoard.printGameBoard();
+		return this.aBoard.printGameBoard();
 	}
+	
+	
 }

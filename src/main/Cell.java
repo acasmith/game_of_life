@@ -6,6 +6,7 @@ import java.util.Set;
 /*
  * TODO:
  * Work on main algo.
+ * Add checks for initial live cells array to avoid out of range exception if < 0 or > 8.
  */
 
 class Cell 
@@ -207,5 +208,10 @@ class Cell
 	{
 		this.doBirth();
 		this.setAlive(false);
+	}
+	
+	public void kill()
+	{
+		
 	}
 }
