@@ -7,6 +7,7 @@ import java.util.Set;
  * TODO:
  * Work on main algo.
  * Add checks for initial live cells array to avoid out of range exception if < 0 or > 8.
+ * Implement a get neighbour, add neighbour methods to stop directly referencing array, in case the data structure is ever changed.
  */
 
 class Cell 
@@ -72,6 +73,21 @@ class Cell
 		this.aliveNeighbourCount = aliveNeighbourCount;
 	}
 	
+	public Cell getNeighbour(int neighbourIndex)
+	{
+		return this.neighbours[neighbourIndex];
+	}
+	
+	public void setNeighbour(int neighbourIndex, Cell aCell)
+	{
+		this.neighbours[neighbourIndex] = aCell;
+	}
+	
+	public int getNeighboursLength()
+	{
+		return this.neighbours.length;
+	}
+	
 	/*
 	 * End Getters/Setters
 	 */
@@ -85,14 +101,15 @@ class Cell
 	public Set<Cell> interconnectNeighbours()
 	{
 		Set<Cell> updatedCells = new HashSet<>();
+		
 		//For each cell in this.neighbours
-		for(int currentElementIndex = 0; currentElementIndex < this.neighbours.length; currentElementIndex++)
+		for(int currentElementIndex = 0; currentElementIndex < this.getNeighboursLength(); currentElementIndex++)
 		{
-			if(this.neighbours[currentElementIndex] != null)
+			if(this.getNeighbour(currentElementIndex) != null)
 			{
 				//Calculate indexes of neighbours that are connected to current Element
 				int lowBoundary = Math.max(currentElementIndex - 4, 0);
-				int highBoundary = Math.min(currentElementIndex + 4, this.neighbours.length - 1);
+				int highBoundary = Math.min(currentElementIndex + 4, this.getNeighboursLength() - 1);
 				
 				//Calculate new index relative to current element, based on OG index.
 				for(int i = lowBoundary; i <= highBoundary; i++)
@@ -109,17 +126,17 @@ class Cell
 					 * changes are propagated through grid by calling interconnect on cells 
 					 * whose neighbours array has just been updated.
 					 */
-					if(!(this.neighbours[i] != null))
+					if(!(this.getNeighbour(i) != null))
 					{
 						continue;
 					}
 					
 					//Calculate shift and assign to currentElement's neighbours.
 					int difference = currentElementIndex - i;
-					if(this.neighbours[currentElementIndex].neighbours[4 - difference] != this.neighbours[i])
+					if(this.getNeighbour(currentElementIndex).getNeighbour(4 - difference) != this.getNeighbour(i))
 					{
-						this.neighbours[currentElementIndex].neighbours[4 - difference] = this.neighbours[i];
-						updatedCells.add(this.neighbours[currentElementIndex].neighbours[4 - difference]);
+						this.getNeighbour(currentElementIndex).setNeighbour(4 - difference, this.getNeighbour(i));
+						updatedCells.add(this.getNeighbour(currentElementIndex).getNeighbour(4 - difference));
 					}
 				}
 			}
@@ -151,17 +168,17 @@ class Cell
 	 */
 	private void informNeighboursAliveStatus()
 	{
-		for(int i = 0; i < this.neighbours.length; i++)
+		for(int i = 0; i < this.getNeighboursLength(); i++)
 		{
-			if(this.neighbours[i] != null)
+			if(this.getNeighbour(i) != null)
 			{
 				if(this.isAlive)
 				{
-					this.neighbours[i].neighbourBorn();
+					this.getNeighbour(i).neighbourBorn();
 				}
 				else
 				{
-					this.neighbours[i].neighbourDied();
+					this.getNeighbour(i).neighbourDied();
 				}
 			}
 		}
@@ -188,15 +205,16 @@ class Cell
 	 */
 	private void extendGrid()
 	{
-		for(int i = 0; i < this.neighbours.length; i++)
+		for(int i = 0; i < this.getNeighboursLength(); i++)
 		{
-			if(!(this.neighbours[i] != null))
+			if(!(this.getNeighbour(i) != null))
 			{
 				//Got to be a math way to do this without using a hardcoded array?
 				int[] diffArray = {-1, 0, 1}; //Array index contains the amount the new cell coordinate needs to shift by, relative to origin cell.
 				int xCoord = this.getX() + diffArray[i % 3];
 				int yCoord = this.getY() + (diffArray[i / 3] * -1);
-				this.neighbours[i] = i == 4 ? this : new Cell(xCoord, yCoord);
+				Cell newCell = i == 4 ? this : new Cell(xCoord, yCoord);
+				this.setNeighbour(i, newCell);
 			}
 		}
 	}
@@ -210,8 +228,33 @@ class Cell
 		this.setAlive(false);
 	}
 	
+	/**
+	 * Method to kill the cell, and propagate this change across the game grid.
+	 */
 	public void kill()
 	{
+		//Change alive status
+		this.setAlive(false);
 		
+		/*
+		 * Inform neighbours of death and if necessary remove any references to 
+		 * self form neighbours to keep grid clean of dead cells with no alive neighbours.
+		 * No alive neighbours means they can't be born, so it's not necessary to track them with an object.
+		 */
+		for(int i = 0; i < this.getNeighboursLength(); i++)
+		{
+			if(i != 4)
+			{
+				this.getNeighbour(i).neighbourDied();
+			}
+			
+			if(this.getAliveNeighbourCount()  <= 0)
+			{
+				int shift = 4 + (4 - i);
+				this.getNeighbour(i).setNeighbour(shift, null);
+			}
+		}
+		
+		this.neighbours = null;
 	}
 }

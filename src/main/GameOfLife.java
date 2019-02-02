@@ -75,6 +75,9 @@ class GameOfLife
 		
 		//2. Check all alive cell neighbours for creation
 		
+		/* TODO:
+		 * Destroy cells, and all the logic/cleanup that goes with that.
+		 */
 		//3. Destroy marked cells
 		for(Cell markedCell : markedCells)
 		{
