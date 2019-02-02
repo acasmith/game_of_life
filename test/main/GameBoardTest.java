@@ -182,5 +182,19 @@ class GameBoardTest {
 		assertTrue(resultString.length() == targetString.length(), "Length should be " + resultString.length() + ", was " + targetString.length());
 		assertTrue(resultString.equals(targetString), "Result should produce the target string.");
 	}
+	
+	@Test
+	void printGameBoard2Cells()
+	{
+		int[] indexArray = {0, 3, 4, 6, 8};
+		this.aBoard = new GameBoard(indexArray);
+		String targetString = "  0 1 2 \n" + 
+				"0|A| | |\n" + 
+				"1|A|A| |\n" + 
+				"2|A| |A|\n";
+		String resultString = this.aBoard.printGameBoard();
+		System.out.println(resultString);
+		assertTrue(resultString.equals(targetString));
+	}
 
 }

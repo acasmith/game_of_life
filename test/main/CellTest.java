@@ -493,4 +493,11 @@ class CellTest {
 		
 		this.testAllNeighbourCoords();
 	}
+	
+	@Test
+	void testAliveNeighbourCounts()
+	{
+		
+	}
+	
 }

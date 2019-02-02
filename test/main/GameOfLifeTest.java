@@ -73,9 +73,19 @@ class GameOfLifeTest {
 	}
 
 	@Test
-	void test2IterationsWithAllAliveCells()
+	void test2IterationsWith6AliveCells()
 	{
 		int[] aliveIndexes = {0, 1, 2, 3, 4, 5};
+		GameOfLife aGame = new GameOfLife(2);
+		String result = aGame.startGame(aliveIndexes);
+		System.out.println(result);
+		assertTrue(result.equals("Game ended: all cells are dead."), "Game should end with statement: \"Game ended: all cells are dead.\"");
+	}
+	
+	@Test
+	void test2IterationsWithAllAliveCells()
+	{
+		int[] aliveIndexes = {0, 1, 2, 3, 4, 5, 6, 7, 8};
 		GameOfLife aGame = new GameOfLife(2);
 		String result = aGame.startGame(aliveIndexes);
 		System.out.println(result);

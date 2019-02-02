@@ -32,6 +32,7 @@ class GameOfLife
 	public String startGame(int[] aliveIndexes)
 	{
 		this.aBoard = new GameBoard(aliveIndexes);
+		System.out.println("Initial board: \n" + this.aBoard.printGameBoard());
 		String finalResult = this.doIteration(0);
 		return finalResult;
 		
@@ -66,8 +67,6 @@ class GameOfLife
 		List<Cell> markedCells = new ArrayList<>();
 		for(Cell aliveCell : this.aBoard.aliveCells)
 		{
-			System.out.println(aliveCell.getAliveNeighbourCount());
-			System.out.println(aliveCell.countAliveNeighbours());
 			if(aliveCell.getAliveNeighbourCount() < 2 ||
 					aliveCell.getAliveNeighbourCount() > 3)
 			{

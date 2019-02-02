@@ -79,7 +79,7 @@ public class GameBoard
 			//Calculate grid dimensions and create grid. Dimensions have +1 because 0 needs to be represented as well!
 			int xDimension = Math.abs(minX) + maxX + 1;
 			int yDimension = Math.abs(minY) + maxY + 1;
-			int[][] gameGrid = new int[xDimension][yDimension];
+			int[][] gameGrid = new int[yDimension][xDimension]; //2d arrays are like a row of columns.
 			
 			//Find originCell index relative to array indexes.
 			int originX = Math.abs(minX);
@@ -90,7 +90,7 @@ public class GameBoard
 			{
 				int cellX = originX + aliveCell.getX();
 				int cellY = originY - aliveCell.getY();	// Uses subtraction not addition because array indexes are not the same as Cartesian graphs! Y get's smaller as it goes vertically up.
-				gameGrid[cellX][cellY] = 1;
+				gameGrid[cellY][cellX] = 1;
 			}
 			
 			//Format grid as string.

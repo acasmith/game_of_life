@@ -200,7 +200,7 @@ class Cell
 	{
 		this.aliveNeighbourCount--;
 		
-		if(this.getAliveNeighbourCount()  <= 0)
+		if(!this.isAlive() && this.getAliveNeighbourCount()  <= 0)
 		{
 			this.cellPermaDeath();
 		}
@@ -230,8 +230,9 @@ class Cell
 	 */
 	public void makeOriginCell()
 	{
-		this.doBirth();
-		this.setAlive(false);
+		this.extendGrid();
+		//Interconnect new cells with existing neighbours, then propagate new cell references through the grid.
+		this.interconnectNeighbours();;
 	}
 	
 	/**
@@ -261,6 +262,7 @@ class Cell
 		}
 	}
 	
+	/* Useful for debugging
 	public int countAliveNeighbours()
 	{
 		int result = 0;
@@ -273,6 +275,7 @@ class Cell
 		}
 		return result;
 	}
+	*/
 	
 	/*
 	 * Removes any references to the cell, and removes any references the cell has to other cells.
