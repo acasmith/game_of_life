@@ -2,7 +2,7 @@ package main;
 
 public class App 
 {
-
+	//Driver code to initialise game.
 	public static void main(String[] args) 
 	{
 		int[] aliveIndexes = {1, 3};
