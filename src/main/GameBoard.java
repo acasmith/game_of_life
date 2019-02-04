@@ -3,6 +3,7 @@ package main;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 
@@ -18,7 +19,7 @@ public class GameBoard
 	 * Constructor
 	 * @param int[] aliveIndexes an integer array represented the cells in the original grid to initially set to alive.
 	 */
-	public GameBoard(int[] aliveIndexes)
+	public GameBoard(Set<Integer> aliveIndexes)
 	{
 		this.aliveCells = this.createInitialGrid(aliveIndexes);
 	}
@@ -27,7 +28,7 @@ public class GameBoard
 	 * Initialises the game board to a 3x3 grid of cells.
 	 * Separate from constructor in case any other logic needs to be added to constructor.
 	 */
-	private List<Cell> createInitialGrid(int[] aliveIndexes)
+	private List<Cell> createInitialGrid(Set<Integer> aliveIndexes)
 	{
 		//Create Cell
 		Cell originCell = new Cell();
@@ -39,9 +40,9 @@ public class GameBoard
 		List<Cell> aliveCells = new ArrayList<>();
 		
 		//Set aliveCells and store them in this.aliveCells
-		for(int i = 0; i < aliveIndexes.length; i ++)
+		for(Integer aliveIndex : aliveIndexes)
 		{
-			Cell bornCell = originCell.neighbours[aliveIndexes[i]];
+			Cell bornCell = originCell.neighbours[aliveIndex];
 			bornCell.doBirth();
 			aliveCells.add(bornCell);
 		}

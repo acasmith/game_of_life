@@ -1,6 +1,7 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,7 +34,19 @@ class GameOfLife
 	 */
 	public String startGame(int[] aliveIndexes)
 	{
-		this.aBoard = new GameBoard(aliveIndexes);
+		//Prevent duplicate indexes and filter for indexes outside of the integer range 0-8.
+		Set<Integer> aliveIndexesSet = new HashSet<Integer>();
+		for(int index : aliveIndexes)
+		{
+			if(index >= 0 && index <= 8)
+			{
+				aliveIndexesSet.add(index);
+			}
+			
+		}
+		
+		
+		this.aBoard = new GameBoard(aliveIndexesSet);
 		System.out.println("Initial board: \n" + this.aBoard.printGameBoard());
 		String finalResult = this.doIteration(0);
 		return finalResult;

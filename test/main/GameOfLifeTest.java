@@ -5,7 +5,25 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
 class GameOfLifeTest {
-
+	
+	@Test
+	void testDuplicateAliveIndexes()
+	{
+		int[] aliveIndexes = {2, 2};
+		GameOfLife aGame = new GameOfLife(5);
+		String result = aGame.startGame(aliveIndexes);
+		assertTrue(result.equals("Game ended: all cells are dead."), "Game should end with statement: \"Game ended: all cells are dead.\"");
+	}
+	
+	@Test
+	void testOutOfRangeAliveIndexes() 
+	{
+		int[] aliveIndexes = {-1, 9};
+		GameOfLife aGame = new GameOfLife(5);
+		String result = aGame.startGame(aliveIndexes);
+		assertTrue(result.equals("Game ended: all cells are dead."), "Game should end with statement: \"Game ended: all cells are dead.\"");
+	}
+	
 	@Test
 	void test0IterationsNoAliveCells() {
 		int[] aliveIndexes = {};

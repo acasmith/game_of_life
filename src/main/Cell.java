@@ -6,6 +6,7 @@ import java.util.Set;
 /*
  * TODO:
  * Test main algo.
+ * Change print algorithm so that 0,0 printed over origin, and indexes are based from that.
  * Add checks for initial live cells array to avoid out of range exception if < 0 or > 8.
  * Put initial alive cells arary into a set, so you avoid issues with multiples of same index.
  * 
