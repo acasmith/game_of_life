@@ -1,8 +1,8 @@
-# game_of_life
-Game of Life console app implemented in Java.
+# Game of Life
+Game of Life command line app implemented in Java.
 
 ## Playing the game
-Pass in a string array where:
+Pass in a string array to the main method where:
 * Index 0 is a positive integer representing the number of iterations for the game to execute before stopping.
 * Optional: any other array elements represent the positive integer indexes of the cells that are alive on the initial 3x3 board, from 0-8 inclusive. The notation has 0 in the top left corner moving right to left, ending with 8 in the bottom right.
 
@@ -15,7 +15,7 @@ Pass in a string array where:
 * Any dead cells present on the viewable grid are represented as an ` ` (single whitespace character).
 
 ### Example
-Passing in the string array ["1, 2, 4"] gives the output:
+Passing in the string array ["1", "2", "4"] gives the output:
 ```
 Initial board:
   0 1
